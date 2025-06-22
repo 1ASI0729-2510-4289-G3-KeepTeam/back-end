@@ -1,5 +1,9 @@
+FROM maven:3.9-eclipse-temurin-22-jammy AS build
+COPY . .
+RUN mvn clean package -DskipTests
+
+# Imagen base oficial de Java 17
 FROM openjdk:24-jdk
-VOLUME /tmp
+COPY --from=build /target/platform-0.0.1-SNAPSHOT.jar demo.jar
 EXPOSE 8080
-COPY target/platform-0.0.1-SNAPSHOT.jar app.jar
-ENTRYPOINT java -Djava.security.egd=file:/dev/./urandom -jar /app.jar
+ENTRYPOINT ["java", "-jar", "demo.jar"]
