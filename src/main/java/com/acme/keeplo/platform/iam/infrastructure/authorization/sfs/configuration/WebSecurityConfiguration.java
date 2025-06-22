@@ -119,21 +119,9 @@ public class WebSecurityConfiguration {
                 .sessionManagement( customizer -> customizer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers(
-                                "/v3/api-docs/**",
-                                "/swagger-ui.html",
-                                "/swagger-ui/**",
-                                "/swagger-resources/**",
-                                "/webjars/**",
-                                "/api/v1/roles/**",
-                                "/api/v1/subscriptions/**",
-                                "/api/v1/payment-cards/**",
-                                "/api/v1/wishes/**",
-                                "/api/v1/collections/**",
-                                "/api/v1/users/**"
+                                "*"
                         ).permitAll()
-                        .anyRequest().authenticated());
-        http.authenticationProvider(authenticationProvider());
-        http.addFilterBefore(authorizationRequestFilter(), UsernamePasswordAuthenticationFilter.class);
+                        .anyRequest());
         return http.build();
 
     }
