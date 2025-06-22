@@ -121,7 +121,7 @@ public class WebSecurityConfiguration {
                         .requestMatchers(
                                 "*"
                         ).permitAll()
-                        .anyRequest());
+                        .anyRequest().permitAll());
         return http.build();
 
     }
