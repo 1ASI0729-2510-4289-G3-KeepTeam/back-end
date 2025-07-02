@@ -22,22 +22,30 @@ public class Collection extends AuditableAbstractAggregateRoot<Collection> {
     private String description;
 
     @Getter
-    private boolean isPublic;
+    private boolean isInTrash;
+
+    @Getter
+    private Long idParentCollection;
+
+    @Getter
+    private String idUser;
 
     public Collection() {
     }
 
-    public Collection(String name, String description, boolean isPublic) {
+    public Collection(String name, String description, boolean isInTrash, Long idParentCollection, String idUser) {
         this();
         this.name = name;
         this.description = description;
-        this.isPublic = isPublic;
+        this.isInTrash = isInTrash;
+        this.idParentCollection = idParentCollection;
+        this.idUser = idUser;
     }
 
     public void updateDetails(String name, String description, boolean isPublic) {
         this.name = name;
         this.description = description;
-        this.isPublic = isPublic;
+        this.isInTrash = isPublic;
     }
 
     @OneToMany(mappedBy = "collection", cascade = CascadeType.ALL, orphanRemoval = true)

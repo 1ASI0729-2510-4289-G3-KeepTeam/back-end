@@ -19,7 +19,11 @@ public class Wish extends AuditableModel {
     @Setter
     private String description;
     @Setter
-    private String url;
+    private String redirectUrl;
+    @Setter
+    private Boolean isInTrash;
+    @Setter
+    private String urlImg;
 
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
@@ -33,11 +37,13 @@ public class Wish extends AuditableModel {
     protected Wish() {
     }
 
-    public Wish(String title, String description, String url, Collection collection) {
+    public Wish(String title, String description, String redirectUrl, Collection collection, Boolean isInTrash, String urlImg) {
         this.title = title;
         this.description = description;
-        this.url = url;
+        this.redirectUrl = redirectUrl;
         this.collection = collection;
+        this.isInTrash =  isInTrash;
+        this.urlImg = urlImg;
     }
 
     public void addTag(Tag tag) {
