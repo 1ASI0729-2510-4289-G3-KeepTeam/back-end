@@ -13,10 +13,15 @@ public class CollectionResourceFromEntityAssembler {
 
     public static CollectionResource toResourceFromEntity(Collection entity) {
         return new CollectionResource(
-                entity.getId().toString(),
-                entity.getName(),
-                entity.getDescription(),
-                entity.isPublic()
+                entity.getId(),
+                entity.getTitle(),
+                entity.isInTrash(),
+                entity.getIdUser(),
+                entity.getIdParentCollection()
         );
     }
 }
+//String id,
+//        String title,
+//        String isInTrash,
+//        boolean idUser

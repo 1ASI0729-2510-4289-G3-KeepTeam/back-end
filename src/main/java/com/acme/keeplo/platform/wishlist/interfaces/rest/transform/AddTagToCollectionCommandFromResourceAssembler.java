@@ -1,9 +1,9 @@
 package com.acme.keeplo.platform.wishlist.interfaces.rest.transform;
-import com.acme.keeplo.platform.wishlist.domain.model.commands.AddTagToWishCommand;
-import com.acme.keeplo.platform.wishlist.interfaces.rest.resources.AddTagToCollectionResource;
+import com.acme.keeplo.platform.wishlist.domain.model.commands.CreateTagToWishCommand;
+import com.acme.keeplo.platform.wishlist.interfaces.rest.resources.AddTagToWishResource;
 
 public class AddTagToCollectionCommandFromResourceAssembler {
-    public static AddTagToWishCommand toCommand(Long collectionId, AddTagToCollectionResource resource) {
-        return new AddTagToWishCommand(collectionId, resource.name(), resource.color());
+    public static CreateTagToWishCommand toCommand(Long collectionId, AddTagToWishResource resource) {
+        return new CreateTagToWishCommand(collectionId, resource.name(), resource.color());
     }
 }

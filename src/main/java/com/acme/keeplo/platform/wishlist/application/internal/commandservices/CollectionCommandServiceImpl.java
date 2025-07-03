@@ -1,7 +1,7 @@
 package com.acme.keeplo.platform.wishlist.application.internal.commandservices;
 
 import com.acme.keeplo.platform.wishlist.domain.model.aggregates.Collection;
-import com.acme.keeplo.platform.wishlist.domain.model.commands.AddTagToWishCommand;
+import com.acme.keeplo.platform.wishlist.domain.model.commands.CreateTagToWishCommand;
 import com.acme.keeplo.platform.wishlist.domain.model.commands.CreateCollectionCommand;
 import com.acme.keeplo.platform.wishlist.domain.model.services.CollectionCommandService;
 import com.acme.keeplo.platform.wishlist.domain.model.valueobjects.Tag;
@@ -22,7 +22,7 @@ public class CollectionCommandServiceImpl implements CollectionCommandService {
 
     @Override
     public Optional<Collection> handle(CreateCollectionCommand command) {
-        Collection collection = new Collection(command.name(), command.description(), command.isInTrash(),command.idParentCollection(),command.idUser());
+        Collection collection = new Collection(command);
         collectionRepository.save(collection);
         return Optional.of(collection);
     }
@@ -35,7 +35,7 @@ public class CollectionCommandServiceImpl implements CollectionCommandService {
     }
 
     @Override
-    public boolean addTagToCollection(AddTagToWishCommand command) {
+    public boolean addTagToCollection(CreateTagToWishCommand command) {
         var collectionOptional = collectionRepository.findById(command.wishId());
         if (collectionOptional.isEmpty()) return false;
 

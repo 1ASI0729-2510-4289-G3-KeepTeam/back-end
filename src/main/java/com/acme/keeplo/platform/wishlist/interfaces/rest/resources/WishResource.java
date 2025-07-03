@@ -1,8 +1,4 @@
 package com.acme.keeplo.platform.wishlist.interfaces.rest.resources;
 
-public record WishResource(Long id,
-                           String title,
-                           String description,
-                           String url,
-                           Long collectionId) {
+public record WishResource(String title, String redirectUrl, String description, String urlImg, Long collectionId, Boolean isInTrash) {
 }

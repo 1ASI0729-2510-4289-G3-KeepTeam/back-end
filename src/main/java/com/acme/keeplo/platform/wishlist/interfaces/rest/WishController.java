@@ -1,14 +1,10 @@
 package com.acme.keeplo.platform.wishlist.interfaces.rest;
 
-import com.acme.keeplo.platform.wishlist.application.internal.commandservices.WishCommandServiceImpl;
-import com.acme.keeplo.platform.wishlist.application.internal.queryservices.WishQueryServiceImpl;
 import com.acme.keeplo.platform.wishlist.domain.model.queries.GetAllWishesByCollectionId;
 import com.acme.keeplo.platform.wishlist.domain.model.queries.GetWishById;
 import com.acme.keeplo.platform.wishlist.domain.model.services.WishCommandService;
 import com.acme.keeplo.platform.wishlist.domain.model.services.WishQueryService;
 import com.acme.keeplo.platform.wishlist.interfaces.rest.resources.*;
-import com.acme.keeplo.platform.wishlist.interfaces.rest.transform.CollectionResourceFromEntityAssembler;
-import com.acme.keeplo.platform.wishlist.interfaces.rest.transform.CreateCollectionCommandFromResourceAssembler;
 import com.acme.keeplo.platform.wishlist.interfaces.rest.transform.WishResourceFromEntityAssembler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -39,8 +35,8 @@ public class WishController {
             @ApiResponse(responseCode = "201", description = "Deseo creado exitosamente"),
             @ApiResponse(responseCode = "400", description = "Solicitud inválida")
     })
-    public ResponseEntity<WishResource> createWish(@RequestBody AddWishResource resource) {
-        var command = AddWishCommandFromResourceAssembler.toCommandFromResource(resource);
+    public ResponseEntity<WishResource> createWish(@RequestBody CreateWishResource resource) {
+        var command = CreateWishCommandFromResourceAssembler.toCommandFromResource(resource);
         var result = wishCommandService.handle(command);
         if (result.isEmpty()) return ResponseEntity.badRequest().build();
 

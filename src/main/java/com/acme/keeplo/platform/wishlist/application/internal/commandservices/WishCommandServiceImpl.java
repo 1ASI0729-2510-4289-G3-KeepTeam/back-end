@@ -1,8 +1,7 @@
 package com.acme.keeplo.platform.wishlist.application.internal.commandservices;
 
 import com.acme.keeplo.platform.wishlist.domain.model.aggregates.Collection;
-import com.acme.keeplo.platform.wishlist.domain.model.commands.AddWishCommand;
-import com.acme.keeplo.platform.wishlist.domain.model.commands.CreateCollectionCommand;
+import com.acme.keeplo.platform.wishlist.domain.model.commands.CreateWishCommand;
 import com.acme.keeplo.platform.wishlist.domain.model.entities.Wish;
 import com.acme.keeplo.platform.wishlist.domain.model.services.WishCommandService;
 import com.acme.keeplo.platform.wishlist.infrastructure.persistence.jpa.repositories.CollectionRepository;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 @Service
 public class WishCommandServiceImpl implements WishCommandService {
+
     private final WishRepository wishRepository;
     private final CollectionRepository collectionRepository;
 
@@ -20,20 +20,19 @@ public class WishCommandServiceImpl implements WishCommandService {
         this.collectionRepository = collectionRepository;
     }
 
-
     @Override
-    public Optional<Wish> handle(AddWishCommand command) {
-        Optional<Collection> optionalCollection = collectionRepository.findById(command.collectionId());
+    public Optional<Wish> handle(CreateWishCommand command) {
 
-        if (optionalCollection.isEmpty()) {
-            return Optional.empty();
-        }
+        Collection collection = collectionRepository.findById(command.collectionId())
+                .orElseThrow(() -> new IllegalArgumentException("Collection not found with ID: " + command.collectionId()));
 
         Wish wish = new Wish(
                 command.title(),
                 command.description(),
-                command.url(),
-                optionalCollection.get()
+                command.redirectUrl(),
+                collection,
+                command.isInTrash(),
+                command.urlImg()
         );
 
         wishRepository.save(wish);

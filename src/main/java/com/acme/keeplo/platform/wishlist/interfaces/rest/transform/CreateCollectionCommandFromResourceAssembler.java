@@ -10,9 +10,10 @@ public class CreateCollectionCommandFromResourceAssembler {
 
     public static CreateCollectionCommand toCommandFromResource(CreateCollectionResource resource) {
         return new CreateCollectionCommand(
-                resource.name(),
-                resource.description(),
-                resource.isPublic()
+                resource.title(),
+                resource.isInTrash(),
+                resource.idUser(),
+                resource.idParentCollection()
         );
     }
 }

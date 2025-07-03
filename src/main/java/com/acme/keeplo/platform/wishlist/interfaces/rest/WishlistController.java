@@ -4,7 +4,7 @@ import com.acme.keeplo.platform.wishlist.domain.model.queries.GetAllCollectionsQ
 import com.acme.keeplo.platform.wishlist.domain.model.queries.GetCollectionByIdQuery;
 import com.acme.keeplo.platform.wishlist.domain.model.services.CollectionCommandService;
 import com.acme.keeplo.platform.wishlist.domain.model.services.CollectionQueryService;
-import com.acme.keeplo.platform.wishlist.interfaces.rest.resources.AddTagToCollectionResource;
+import com.acme.keeplo.platform.wishlist.interfaces.rest.resources.AddTagToWishResource;
 import com.acme.keeplo.platform.wishlist.interfaces.rest.resources.CollectionResource;
 import com.acme.keeplo.platform.wishlist.interfaces.rest.resources.CreateCollectionResource;
 import com.acme.keeplo.platform.wishlist.interfaces.rest.transform.AddTagToCollectionCommandFromResourceAssembler;
@@ -96,7 +96,7 @@ public class WishlistController {
     })
     public ResponseEntity<Void> addTagToCollection(
             @PathVariable Long collectionId,
-            @RequestBody AddTagToCollectionResource resource) {
+            @RequestBody AddTagToWishResource resource) {
 
         var command = AddTagToCollectionCommandFromResourceAssembler.toCommand(collectionId, resource);
         boolean result = collectionCommandService.addTagToCollection(command);

@@ -109,7 +109,7 @@ public class User extends AuditableAbstractAggregateRoot<User> {
     }
 
     /**
-     * Adds a collection of roles to the user's set of roles.
+     * Adds a collectionId of roles to the user's set of roles.
      * @param roles The List of Role entities to add.
      * @return The updated User instance (for method chaining).
      */
