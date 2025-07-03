@@ -2,6 +2,7 @@ package com.acme.keeplo.platform.wishlist.application.internal.commandservices;
 
 import com.acme.keeplo.platform.wishlist.domain.model.aggregates.Collection;
 import com.acme.keeplo.platform.wishlist.domain.model.commands.CreateWishCommand;
+import com.acme.keeplo.platform.wishlist.domain.model.commands.UpdateWishCommand;
 import com.acme.keeplo.platform.wishlist.domain.model.entities.Wish;
 import com.acme.keeplo.platform.wishlist.domain.model.services.WishCommandService;
 import com.acme.keeplo.platform.wishlist.infrastructure.persistence.jpa.repositories.CollectionRepository;
@@ -46,6 +47,18 @@ public class WishCommandServiceImpl implements WishCommandService {
         return true;
     }
 
+    @Override
+    public Optional<Wish> handle(UpdateWishCommand command) {
+        Optional<Wish> existingWishOptional = wishRepository.findById(command.id());
 
+        if (existingWishOptional.isEmpty()) {
+            return Optional.empty();
+        }
 
+        Wish existingWish = existingWishOptional.get();
+
+        existingWish.update(command.title(), command.redirectUrl(), command.description(), command.urlImg(), command.isInTrash());
+        wishRepository.save(existingWish);
+        return Optional.of(existingWish);
+    }
 }

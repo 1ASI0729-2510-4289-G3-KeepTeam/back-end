@@ -5,6 +5,7 @@ import com.acme.keeplo.platform.wishlist.domain.model.queries.GetWishById;
 import com.acme.keeplo.platform.wishlist.domain.model.services.WishCommandService;
 import com.acme.keeplo.platform.wishlist.domain.model.services.WishQueryService;
 import com.acme.keeplo.platform.wishlist.interfaces.rest.resources.*;
+import com.acme.keeplo.platform.wishlist.interfaces.rest.transform.UpdateWishCommandFromResourceAssembler;
 import com.acme.keeplo.platform.wishlist.interfaces.rest.transform.WishResourceFromEntityAssembler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -81,5 +82,24 @@ public class WishController {
     public ResponseEntity<Void> deleteWish(@PathVariable Long wishId) {
         var result = wishCommandService.deleteById(wishId);
         return result ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    }
+    @PutMapping("/{wishId}")
+    @Operation(summary = "Actualizar un deseo existente")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Deseo actualizado exitosamente"),
+            @ApiResponse(responseCode = "400", description = "Solicitud inválida"),
+            @ApiResponse(responseCode = "404", description = "Deseo no encontrado")
+    })
+    public ResponseEntity<WishResource> updateWish(@PathVariable Long wishId, @RequestBody UpdateWishResource resource) {
+        var command = UpdateWishCommandFromResourceAssembler.toCommandFromResource(wishId, resource);
+        var result = wishCommandService.handle(command);
+
+        if (result.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        var wish = result.get();
+        var response = WishResourceFromEntityAssembler.toResourceFromEntity(wish);
+        return ResponseEntity.ok(response);
     }
 }

@@ -48,9 +48,10 @@ public class Collection extends AuditableAbstractAggregateRoot<Collection> {
     }
 
 
-    public void updateDetails(String name,  boolean isPublic) {
-        this.title = name;
-        this.isInTrash = isPublic;
+    public void update(String title, boolean isInTrash, Long idParentCollection) {
+        this.title = title;
+        this.isInTrash = isInTrash;
+        this.idParentCollection = idParentCollection;
     }
 
     @OneToMany(mappedBy = "collection", cascade = CascadeType.ALL, orphanRemoval = true)

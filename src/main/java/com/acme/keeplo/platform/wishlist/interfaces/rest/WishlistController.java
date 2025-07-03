@@ -7,9 +7,11 @@ import com.acme.keeplo.platform.wishlist.domain.model.services.CollectionQuerySe
 import com.acme.keeplo.platform.wishlist.interfaces.rest.resources.AddTagToWishResource;
 import com.acme.keeplo.platform.wishlist.interfaces.rest.resources.CollectionResource;
 import com.acme.keeplo.platform.wishlist.interfaces.rest.resources.CreateCollectionResource;
+import com.acme.keeplo.platform.wishlist.interfaces.rest.resources.UpdateCollectionResource;
 import com.acme.keeplo.platform.wishlist.interfaces.rest.transform.AddTagToCollectionCommandFromResourceAssembler;
 import com.acme.keeplo.platform.wishlist.interfaces.rest.transform.CollectionResourceFromEntityAssembler;
 import com.acme.keeplo.platform.wishlist.interfaces.rest.transform.CreateCollectionCommandFromResourceAssembler;
+import com.acme.keeplo.platform.wishlist.interfaces.rest.transform.UpdateCollectionCommandFromResourceAssembler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -102,6 +104,26 @@ public class WishlistController {
         boolean result = collectionCommandService.addTagToCollection(command);
 
         return result ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+    }
+
+    @PutMapping("/{collectionId}")
+    @Operation(summary = "Actualizar una colección existente")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Colección actualizada exitosamente"),
+            @ApiResponse(responseCode = "400", description = "Solicitud inválida"),
+            @ApiResponse(responseCode = "404", description = "Colección no encontrada")
+    })
+    public ResponseEntity<CollectionResource> updateCollection(@PathVariable Long collectionId, @RequestBody UpdateCollectionResource resource) {
+        var command = UpdateCollectionCommandFromResourceAssembler.toCommandFromResource(collectionId, resource);
+        var result = collectionCommandService.handle(command);
+
+        if (result.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        var collection = result.get();
+        var response = CollectionResourceFromEntityAssembler.toResourceFromEntity(collection);
+        return ResponseEntity.ok(response);
     }
 }
 

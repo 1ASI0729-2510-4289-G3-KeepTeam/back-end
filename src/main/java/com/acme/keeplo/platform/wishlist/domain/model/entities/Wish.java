@@ -47,6 +47,14 @@ public class Wish extends AuditableModel {
         this.urlImg = urlImg;
     }
 
+    public void update(String title, String redirectUrl, String description, String urlImg, Boolean isInTrash) {
+        this.title = title;
+        this.redirectUrl = redirectUrl;
+        this.description = description;
+        this.urlImg = urlImg;
+        this.isInTrash = isInTrash;
+    }
+
     public void addTag(Tag tag) {
         this.tags.add(tag);
     }
