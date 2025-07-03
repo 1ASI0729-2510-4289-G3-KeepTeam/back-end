@@ -1,6 +1,7 @@
 package com.acme.keeplo.platform.iam.application.internal.commandservices;
 
 import com.acme.keeplo.platform.iam.domain.model.aggregates.User;
+import com.acme.keeplo.platform.iam.domain.model.commands.ChangePasswordCommand;
 import com.acme.keeplo.platform.iam.domain.model.commands.SignInCommand;
 import com.acme.keeplo.platform.iam.domain.model.commands.SignUpCommand;
 import com.acme.keeplo.platform.iam.domain.model.commands.UpdateUserCommand;
@@ -49,7 +50,7 @@ public class UserCommandServiceImpl implements UserCommandService {
      */
     @Override
     public Optional<ImmutablePair<User, String>> handle(SignInCommand command) {
-        var user = userRepository.findByEmail(command.username());
+        var user = userRepository.findByEmail(command.email());
         if (user.isEmpty()) {
             return Optional.empty();
         }
@@ -107,4 +108,26 @@ public class UserCommandServiceImpl implements UserCommandService {
                 .orElseThrow(() -> new IllegalArgumentException(String.format("User", id)));
         userRepository.delete(user);
     }
+
+    @Override
+    public Optional<User> changePassword(ChangePasswordCommand command) {
+        Optional<User> userOptional = userRepository.findById(command.userId());
+
+        if (userOptional.isEmpty()) return Optional.empty();
+
+        User user = userOptional.get();
+
+        // Verifica la contraseña actual (usa tu método de hashing/encoding)
+        if (!hashingService.matches(command.currentPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("Current password is incorrect");
+        }
+
+        // Establece la nueva contraseña codificada
+        user.setPassword(hashingService.encode(command.newPassword()));
+        userRepository.save(user);
+
+        return Optional.of(user);
+    }
+
+
 }

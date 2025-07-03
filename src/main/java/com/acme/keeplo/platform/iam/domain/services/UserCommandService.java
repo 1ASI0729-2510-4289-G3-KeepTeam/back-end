@@ -1,6 +1,7 @@
 package com.acme.keeplo.platform.iam.domain.services;
 
 import com.acme.keeplo.platform.iam.domain.model.aggregates.User;
+import com.acme.keeplo.platform.iam.domain.model.commands.ChangePasswordCommand;
 import com.acme.keeplo.platform.iam.domain.model.commands.SignInCommand;
 import com.acme.keeplo.platform.iam.domain.model.commands.SignUpCommand;
 import com.acme.keeplo.platform.iam.domain.model.commands.UpdateUserCommand;
@@ -38,6 +39,6 @@ public interface UserCommandService {
      * @param id The ID of the user to be deleted.
      */
     void deleteUserById(Long id);
-
+    Optional<User> changePassword(ChangePasswordCommand command);
 
 }

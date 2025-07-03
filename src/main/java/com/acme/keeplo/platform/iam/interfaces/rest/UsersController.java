@@ -1,10 +1,12 @@
 package com.acme.keeplo.platform.iam.interfaces.rest;
 
+import com.acme.keeplo.platform.iam.domain.model.commands.ChangePasswordCommand;
 import com.acme.keeplo.platform.iam.domain.model.commands.UpdateUserCommand;
 import com.acme.keeplo.platform.iam.domain.model.queries.GetAllUsersQuery; // Tu query
 import com.acme.keeplo.platform.iam.domain.model.queries.GetUserByIdQuery; // Tu query
 import com.acme.keeplo.platform.iam.domain.services.UserCommandService;
 import com.acme.keeplo.platform.iam.domain.services.UserQueryService; // Tu servicio
+import com.acme.keeplo.platform.iam.interfaces.rest.resources.ChangePasswordResource;
 import com.acme.keeplo.platform.iam.interfaces.rest.resources.UpdateUserResource;
 import com.acme.keeplo.platform.iam.interfaces.rest.resources.UserResource; // Tu recurso
 import com.acme.keeplo.platform.iam.interfaces.rest.transform.UserResourceFromEntityAssembler; // Tu ensamblador
@@ -25,6 +27,7 @@ import java.util.stream.Collectors; // Necesario para .collect(Collectors.toList
  * - GET /api/v1/users: returns all the users
  * - GET /api/v1/users/{userId}: returns the user with the given id
  **/
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping(value = "/api/v1/users", produces = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "Users", description = "Available User Endpoints")
@@ -89,6 +92,19 @@ public class UsersController {
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userCommandService.deleteUserById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/change-password")
+    public ResponseEntity<?> changePassword(@PathVariable Long id, @RequestBody ChangePasswordResource resource) {
+        var command = new ChangePasswordCommand(id, resource.currentPassword(), resource.newPassword());
+
+        try {
+            var result = userCommandService.changePassword(command);
+            if (result.isEmpty()) return ResponseEntity.notFound().build();
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
 
