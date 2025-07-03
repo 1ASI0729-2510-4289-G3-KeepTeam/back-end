@@ -1,8 +1,11 @@
 package com.acme.keeplo.platform.iam.interfaces.rest;
 
+import com.acme.keeplo.platform.iam.domain.model.commands.UpdateUserCommand;
 import com.acme.keeplo.platform.iam.domain.model.queries.GetAllUsersQuery; // Tu query
 import com.acme.keeplo.platform.iam.domain.model.queries.GetUserByIdQuery; // Tu query
+import com.acme.keeplo.platform.iam.domain.services.UserCommandService;
 import com.acme.keeplo.platform.iam.domain.services.UserQueryService; // Tu servicio
+import com.acme.keeplo.platform.iam.interfaces.rest.resources.UpdateUserResource;
 import com.acme.keeplo.platform.iam.interfaces.rest.resources.UserResource; // Tu recurso
 import com.acme.keeplo.platform.iam.interfaces.rest.transform.UserResourceFromEntityAssembler; // Tu ensamblador
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,10 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors; // Necesario para .collect(Collectors.toList())
@@ -30,9 +30,11 @@ import java.util.stream.Collectors; // Necesario para .collect(Collectors.toList
 @Tag(name = "Users", description = "Available User Endpoints")
 public class UsersController {
     private final UserQueryService userQueryService;
+    private final UserCommandService userCommandService;
 
-    public UsersController(UserQueryService userQueryService) {
+    public UsersController(UserQueryService userQueryService, UserCommandService userCommandService) {
         this.userQueryService = userQueryService;
+        this.userCommandService = userCommandService;
     }
 
     /**
@@ -74,4 +76,23 @@ public class UsersController {
         var userResource = UserResourceFromEntityAssembler.toResourceFromEntity(user.get());
         return ResponseEntity.ok(userResource);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserResource> updateUser(@PathVariable Long id, @RequestBody UpdateUserResource resource) {
+        var command = new UpdateUserCommand(id, resource.name(), resource.email(), resource.profilePicture());
+        var updatedUser = userCommandService.updateUser(command);
+        var userResource = UserResourceFromEntityAssembler.toResourceFromEntity(updatedUser);
+        return ResponseEntity.ok(userResource);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        userCommandService.deleteUserById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+
+
+
+
 }

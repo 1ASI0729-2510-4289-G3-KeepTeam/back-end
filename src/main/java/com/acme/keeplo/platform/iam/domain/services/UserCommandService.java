@@ -3,6 +3,7 @@ package com.acme.keeplo.platform.iam.domain.services;
 import com.acme.keeplo.platform.iam.domain.model.aggregates.User;
 import com.acme.keeplo.platform.iam.domain.model.commands.SignInCommand;
 import com.acme.keeplo.platform.iam.domain.model.commands.SignUpCommand;
+import com.acme.keeplo.platform.iam.domain.model.commands.UpdateUserCommand;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.util.Optional;
@@ -26,4 +27,17 @@ public interface UserCommandService {
      * @return An {@link Optional} containing the created {@link User} entity if the operation was successful, or empty if it failed (e.g., email already exists).
      */
     Optional<User> handle(SignUpCommand command);
+    /**
+     * Handles the update of an existing user.
+     * @param command The {@link UpdateUserCommand} containing the new data for the user.
+     * @return The updated {@link User} entity.
+     */
+    User updateUser(UpdateUserCommand command);
+    /**
+     * Deletes a user by their ID.
+     * @param id The ID of the user to be deleted.
+     */
+    void deleteUserById(Long id);
+
+
 }

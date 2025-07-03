@@ -3,6 +3,7 @@ package com.acme.keeplo.platform.iam.application.internal.commandservices;
 import com.acme.keeplo.platform.iam.domain.model.aggregates.User;
 import com.acme.keeplo.platform.iam.domain.model.commands.SignInCommand;
 import com.acme.keeplo.platform.iam.domain.model.commands.SignUpCommand;
+import com.acme.keeplo.platform.iam.domain.model.commands.UpdateUserCommand;
 import com.acme.keeplo.platform.iam.domain.model.entities.Role;
 import com.acme.keeplo.platform.iam.domain.model.valueobjects.Roles;
 import com.acme.keeplo.platform.iam.domain.services.UserCommandService;
@@ -85,5 +86,25 @@ public class UserCommandServiceImpl implements UserCommandService {
         var createdUser = userRepository.save(user);
 
         return Optional.of(createdUser);
+    }
+
+    @Override
+    public User updateUser(UpdateUserCommand command) {
+        User user = userRepository.findById(command.id())
+                .orElseThrow(() -> new IllegalArgumentException(String.format("User", command.id())));
+
+        // Aquí actualizas los campos
+        user.setName(command.name());
+        user.setEmail(command.email());
+        user.setProfilePicture(command.profilePicture());
+
+        return userRepository.save(user);
+    }
+
+    @Override
+    public void deleteUserById(Long id) {
+        var user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(String.format("User", id)));
+        userRepository.delete(user);
     }
 }
