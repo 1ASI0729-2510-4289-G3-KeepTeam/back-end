@@ -5,6 +5,7 @@ import com.acme.keeplo.platform.wishlist.domain.model.queries.GetWishById;
 import com.acme.keeplo.platform.wishlist.domain.model.services.WishCommandService;
 import com.acme.keeplo.platform.wishlist.domain.model.services.WishQueryService;
 import com.acme.keeplo.platform.wishlist.interfaces.rest.resources.*;
+import com.acme.keeplo.platform.wishlist.interfaces.rest.transform.AddTagToCollectionCommandFromResourceAssembler;
 import com.acme.keeplo.platform.wishlist.interfaces.rest.transform.UpdateWishCommandFromResourceAssembler;
 import com.acme.keeplo.platform.wishlist.interfaces.rest.transform.WishResourceFromEntityAssembler;
 import io.swagger.v3.oas.annotations.Operation;
@@ -101,5 +102,21 @@ public class WishController {
         var wish = result.get();
         var response = WishResourceFromEntityAssembler.toResourceFromEntity(wish);
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{wishId}/tags")
+    @Operation(summary = "Agregar un tag a un wish")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Tag agregado exitosamente"),
+            @ApiResponse(responseCode = "404", description = "wish no encontrado")
+    })
+    public ResponseEntity<Void> addTagToWish(
+            @PathVariable Long wishId,
+            @RequestBody AddTagToWishResource resource) {
+
+        var command = AddTagToCollectionCommandFromResourceAssembler.toCommand(wishId, resource);
+        boolean result = wishCommandService.addTagToWish(command);
+
+        return result ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
 }

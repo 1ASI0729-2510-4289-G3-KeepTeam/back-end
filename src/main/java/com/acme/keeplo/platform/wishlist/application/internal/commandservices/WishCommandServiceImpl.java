@@ -1,10 +1,12 @@
 package com.acme.keeplo.platform.wishlist.application.internal.commandservices;
 
 import com.acme.keeplo.platform.wishlist.domain.model.aggregates.Collection;
+import com.acme.keeplo.platform.wishlist.domain.model.commands.CreateTagToWishCommand;
 import com.acme.keeplo.platform.wishlist.domain.model.commands.CreateWishCommand;
 import com.acme.keeplo.platform.wishlist.domain.model.commands.UpdateWishCommand;
 import com.acme.keeplo.platform.wishlist.domain.model.entities.Wish;
 import com.acme.keeplo.platform.wishlist.domain.model.services.WishCommandService;
+import com.acme.keeplo.platform.wishlist.domain.model.valueobjects.Tag;
 import com.acme.keeplo.platform.wishlist.infrastructure.persistence.jpa.repositories.CollectionRepository;
 import com.acme.keeplo.platform.wishlist.infrastructure.persistence.jpa.repositories.WishRepository;
 import org.springframework.stereotype.Service;
@@ -61,4 +63,18 @@ public class WishCommandServiceImpl implements WishCommandService {
         wishRepository.save(existingWish);
         return Optional.of(existingWish);
     }
+
+    @Override
+    public boolean addTagToWish(CreateTagToWishCommand command) {
+        var optionalWish = wishRepository.findById(command.wishId());
+        if (optionalWish.isEmpty()) return false;
+
+        var wish = optionalWish.get();
+        var tag = new Tag(command.name(), command.color());
+        wish.addTag(tag);
+        wishRepository.save(wish);
+
+        return true;
+    }
+
 }

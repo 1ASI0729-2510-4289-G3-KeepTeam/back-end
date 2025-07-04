@@ -87,8 +87,8 @@ public class WishlistController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Listado de colecciones por parent collection id")
     })
-    public ResponseEntity<List<CollectionResource>> getCollectionByParentCollectionId(@PathVariable Long userId) {
-        var query = new GetAllCollectionsByParentCollectionId(userId);
+    public ResponseEntity<List<CollectionResource>> getCollectionByParentCollectionId(@PathVariable Long parentCollectionId) {
+        var query = new GetAllCollectionsByParentCollectionId(parentCollectionId);
         var collections = collectionQueryService.handle(query);
         var resources = collections.stream()
                 .map(CollectionResourceFromEntityAssembler::toResourceFromEntity)
@@ -122,21 +122,6 @@ public class WishlistController {
         return result ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 
-    @PostMapping("/{collectionId}/tags")
-    @Operation(summary = "Agregar un tag a una colección")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Tag agregado exitosamente"),
-            @ApiResponse(responseCode = "404", description = "Colección no encontrada")
-    })
-    public ResponseEntity<Void> addTagToCollection(
-            @PathVariable Long collectionId,
-            @RequestBody AddTagToWishResource resource) {
-
-        var command = AddTagToCollectionCommandFromResourceAssembler.toCommand(collectionId, resource);
-        boolean result = collectionCommandService.addTagToCollection(command);
-
-        return result ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
-    }
 
     @PutMapping("/{collectionId}")
     @Operation(summary = "Actualizar una colección existente")

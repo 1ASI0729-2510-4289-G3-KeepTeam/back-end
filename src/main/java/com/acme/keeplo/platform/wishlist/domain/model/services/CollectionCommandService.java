@@ -10,6 +10,5 @@ import java.util.Optional;
 public interface CollectionCommandService {
     Optional<Collection> handle(CreateCollectionCommand command);
     boolean deleteById(Long id);
-    boolean addTagToCollection(CreateTagToWishCommand command);
     Optional<Collection> handle(UpdateCollectionCommand command);
 }

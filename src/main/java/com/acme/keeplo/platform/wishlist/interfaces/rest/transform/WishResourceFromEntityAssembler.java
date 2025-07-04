@@ -7,6 +7,7 @@ public class WishResourceFromEntityAssembler {
 
     public static WishResource toResourceFromEntity(Wish wish) {
         return new WishResource(
+                wish.getId(),
                 wish.getTitle(),
                 wish.getRedirectUrl(),
                 wish.getDescription(),

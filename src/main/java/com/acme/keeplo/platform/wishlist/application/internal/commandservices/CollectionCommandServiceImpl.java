@@ -35,18 +35,6 @@ public class CollectionCommandServiceImpl implements CollectionCommandService {
         return true;
     }
 
-    @Override
-    public boolean addTagToCollection(CreateTagToWishCommand command) {
-        var collectionOptional = collectionRepository.findById(command.wishId());
-        if (collectionOptional.isEmpty()) return false;
-
-        var collection = collectionOptional.get();
-        var tag = new Tag(command.name(), command.color());
-        collection.addTag(tag);
-        collectionRepository.save(collection);
-
-        return true;
-    }
 
     @Override
     public Optional<Collection> handle(UpdateCollectionCommand command) {
