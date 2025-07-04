@@ -1,4 +1,14 @@
 package com.acme.keeplo.platform.wishlist.interfaces.rest.resources;
 
-public record WishResource(Long id,String title, String redirectUrl, String description, String urlImg, Long collectionId, Boolean isInTrash) {
-}
+import java.util.List;
+
+public record WishResource(
+        Long id,
+        String title,
+        String redirectUrl,
+        String description,
+        String urlImg,
+        Long collectionId,
+        Boolean isInTrash,
+        List<TagResource> tags
+) {}
