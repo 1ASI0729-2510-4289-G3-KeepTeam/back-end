@@ -1,6 +1,8 @@
 package com.acme.keeplo.platform.wishlist.application.internal.queryservices;
 
 import com.acme.keeplo.platform.wishlist.domain.model.aggregates.Collection;
+import com.acme.keeplo.platform.wishlist.domain.model.queries.GetAllCollectionsByParentCollectionId;
+import com.acme.keeplo.platform.wishlist.domain.model.queries.GetAllCollectionsByUserId;
 import com.acme.keeplo.platform.wishlist.domain.model.queries.GetAllCollectionsQuery;
 import com.acme.keeplo.platform.wishlist.domain.model.queries.GetCollectionByIdQuery;
 import com.acme.keeplo.platform.wishlist.domain.model.services.CollectionQueryService;
@@ -27,5 +29,15 @@ public class CollectionQueryServiceImpl implements CollectionQueryService {
     @Override
     public List<Collection> handle(GetAllCollectionsQuery query) {
         return collectionRepository.findAll();
+    }
+
+    @Override
+    public List<Collection> handle(GetAllCollectionsByUserId query) {
+        return collectionRepository.findCollectionByIdUser(query.userId());
+    }
+
+    @Override
+    public List<Collection> handle(GetAllCollectionsByParentCollectionId query) {
+        return collectionRepository.findCollectionByIdParentCollection(query.parentCollectionId());
     }
 }

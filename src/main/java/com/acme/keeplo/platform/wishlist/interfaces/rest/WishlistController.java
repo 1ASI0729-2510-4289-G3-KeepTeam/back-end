@@ -1,5 +1,7 @@
 package com.acme.keeplo.platform.wishlist.interfaces.rest;
 
+import com.acme.keeplo.platform.wishlist.domain.model.queries.GetAllCollectionsByParentCollectionId;
+import com.acme.keeplo.platform.wishlist.domain.model.queries.GetAllCollectionsByUserId;
 import com.acme.keeplo.platform.wishlist.domain.model.queries.GetAllCollectionsQuery;
 import com.acme.keeplo.platform.wishlist.domain.model.queries.GetCollectionByIdQuery;
 import com.acme.keeplo.platform.wishlist.domain.model.services.CollectionCommandService;
@@ -64,6 +66,36 @@ public class WishlistController {
                 .map(c -> ResponseEntity.ok(CollectionResourceFromEntityAssembler.toResourceFromEntity(c)))
                 .orElse(ResponseEntity.notFound().build());
     }
+
+
+    @GetMapping("/user/{userId}")
+    @Operation(summary = "Obtener colecciones por User ID")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Listado de colecciones por user id")
+    })
+    public ResponseEntity<List<CollectionResource>> getCollectionByUserId(@PathVariable Long userId) {
+        var query = new GetAllCollectionsByUserId(userId);
+        var collections = collectionQueryService.handle(query);
+        var resources = collections.stream()
+                .map(CollectionResourceFromEntityAssembler::toResourceFromEntity)
+                .toList();
+        return ResponseEntity.ok(resources);
+    }
+
+    @GetMapping("/parentCollection/{parentCollectionId}")
+    @Operation(summary = "Obtener colecciones por parent collection ID")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Listado de colecciones por parent collection id")
+    })
+    public ResponseEntity<List<CollectionResource>> getCollectionByParentCollectionId(@PathVariable Long userId) {
+        var query = new GetAllCollectionsByParentCollectionId(userId);
+        var collections = collectionQueryService.handle(query);
+        var resources = collections.stream()
+                .map(CollectionResourceFromEntityAssembler::toResourceFromEntity)
+                .toList();
+        return ResponseEntity.ok(resources);
+    }
+
 
     @GetMapping
     @Operation(summary = "Obtener todas las colecciones")

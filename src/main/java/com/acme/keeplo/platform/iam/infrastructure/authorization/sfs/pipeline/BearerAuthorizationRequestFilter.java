@@ -32,6 +32,14 @@ public class BearerAuthorizationRequestFilter extends OncePerRequestFilter {
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
 
+        String path = request.getRequestURI();
+
+        if (path.startsWith("/api/v1/authentication/sign-in") ||
+                path.startsWith("/api/v1/authentication/sign-up")){
+            filterChain.doFilter(request, response);
+            return;
+        }
+
 
         String authorizationHeader = request.getHeader("Authorization");
 
@@ -48,7 +56,6 @@ public class BearerAuthorizationRequestFilter extends OncePerRequestFilter {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
             if (tokenService.validateToken(token)) {
-
                 UsernamePasswordAuthenticationToken authenticationToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
