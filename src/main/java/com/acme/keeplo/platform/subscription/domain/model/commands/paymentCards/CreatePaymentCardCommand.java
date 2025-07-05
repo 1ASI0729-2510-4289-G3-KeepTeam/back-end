@@ -14,7 +14,7 @@ import java.util.Date;
 public record CreatePaymentCardCommand(
         String cardNumber,
         String holderName,
-        Date expirationDate,
+        String expirationDate,
         String cvv
 ) {
     public CreatePaymentCardCommand {
@@ -24,6 +24,8 @@ public record CreatePaymentCardCommand(
             throw new IllegalArgumentException("holderName is required.");
         if (expirationDate == null)
             throw new IllegalArgumentException("expirationDate is required.");
+        if (!expirationDate.matches("^(0[1-9]|1[0-2])/\\d{2}$"))
+            throw new IllegalArgumentException("expirationDate must be in MM/yy format.");
         if (cvv == null || cvv.isBlank())
             throw new IllegalArgumentException("cvv is required.");
     }

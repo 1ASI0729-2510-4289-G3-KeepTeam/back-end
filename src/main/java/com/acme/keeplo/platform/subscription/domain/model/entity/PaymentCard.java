@@ -31,7 +31,7 @@ public class PaymentCard extends AuditableModel {
     private String holderName;
 
     @Column(nullable = false)
-    private Date expirationDate;
+    private String expirationDate;
 
     @Column(nullable = false)
     private String cvv;
@@ -54,7 +54,7 @@ public class PaymentCard extends AuditableModel {
      * @param expirationDate the expiration date of the card (must not be null)
      * @param cvv the CVV code of the card (must not be null or blank)
      */
-    public PaymentCard(String cardNumber, String holderName, Date expirationDate, String cvv) {
+    public PaymentCard(String cardNumber, String holderName, String expirationDate, String cvv) {
         if (cardNumber == null) {
             throw new IllegalArgumentException("Card number cannot be null.");
         }
@@ -64,9 +64,13 @@ public class PaymentCard extends AuditableModel {
         if (expirationDate == null) {
             throw new IllegalArgumentException("Expiration date cannot be null.");
         }
+        if (!expirationDate.matches("^(0[1-9]|1[0-2])/\\d{2}$")) {
+            throw new IllegalArgumentException("Expiration date must be in MM/yy format.");
+        }
         if (cvv == null || cvv.isBlank()) {
             throw new IllegalArgumentException("CVV cannot be null or empty.");
         }
+
         this.cardNumber = cardNumber;
         this.holderName = holderName;
         this.expirationDate = expirationDate;
@@ -81,7 +85,7 @@ public class PaymentCard extends AuditableModel {
      * @param expirationDate the new expiration date (must not be null)
      * @param cvv the new CVV code (must not be null or blank)
      */
-    public void update(String cardNumber, String holderName, Date expirationDate, String cvv) {
+    public void update(String cardNumber, String holderName, String expirationDate, String cvv) {
         if (cardNumber == null) {
             throw new IllegalArgumentException("Card number cannot be null.");
         }
@@ -90,6 +94,9 @@ public class PaymentCard extends AuditableModel {
         }
         if (expirationDate == null) {
             throw new IllegalArgumentException("Expiration date cannot be null.");
+        }
+        if (!expirationDate.matches("^(0[1-9]|1[0-2])/\\d{2}$")) {
+            throw new IllegalArgumentException("Expiration date must be in MM/yy format.");
         }
         if (cvv == null || cvv.isBlank()) {
             throw new IllegalArgumentException("CVV cannot be null or empty.");

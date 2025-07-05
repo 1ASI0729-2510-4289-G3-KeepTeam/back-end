@@ -13,7 +13,7 @@ import java.util.Date;
  * @param cvv            the card's CVV security code
  * @throws IllegalArgumentException if any required field is null
  */
-public record CreatePaymentCardResource(String cardNumber, String holderName, Date expirationDate, String cvv) {
+public record CreatePaymentCardResource(String cardNumber, String holderName, String expirationDate, String cvv) {
     /**
      * Constructs a CreatePaymentCardResource with validation.
      *
@@ -26,6 +26,8 @@ public record CreatePaymentCardResource(String cardNumber, String holderName, Da
             throw new IllegalArgumentException("holderName must be provided.");
         if (expirationDate == null)
             throw new IllegalArgumentException("expirationDate must be provided");
+        if (!expirationDate.matches("^(0[1-9]|1[0-2])/\\d{2}$"))
+            throw new IllegalArgumentException("expirationDate must be in MM/yy format.");
         if (cvv == null)
             throw new IllegalArgumentException("cvv must be provided");
     }

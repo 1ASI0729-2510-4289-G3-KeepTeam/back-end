@@ -17,6 +17,6 @@ public record PaymentCardResource(
         Long id,
         String cardNumber,
         String holderName,
-        Date expirationDate,
+        String expirationDate,
         String Cvv
 ) {}
