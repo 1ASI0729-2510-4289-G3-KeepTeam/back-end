@@ -2,10 +2,12 @@ package com.acme.keeplo.platform.subscription.application.internal.queryservices
 
 import com.acme.keeplo.platform.subscription.domain.model.entity.PaymentCard;
 import com.acme.keeplo.platform.subscription.domain.model.queries.GetPaymentCardByIdQuery;
+import com.acme.keeplo.platform.subscription.domain.model.queries.GetPaymentCardsByUserIdQuery;
 import com.acme.keeplo.platform.subscription.domain.services.PaymentCardQueryService;
 import com.acme.keeplo.platform.subscription.infrastructure.persistence.jpa.PaymentCardRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 /**
  * Service implementation for handling queries related to payment cards.
@@ -35,5 +37,11 @@ public class PaymentCardQueryServiceImpl implements PaymentCardQueryService {
     @Override
     public Optional<PaymentCard> handle(GetPaymentCardByIdQuery query) {
         return paymentCardRepository.findById(query.cardId());
+    }
+
+    @Override
+    public Optional<List<PaymentCard>> handle(GetPaymentCardsByUserIdQuery query) {
+        List<PaymentCard> cards = paymentCardRepository.findAllByUser_Id(query.userId());
+        return cards.isEmpty() ? Optional.empty() : Optional.of(cards);
     }
 }

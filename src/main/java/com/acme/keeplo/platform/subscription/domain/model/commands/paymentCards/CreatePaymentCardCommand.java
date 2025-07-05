@@ -15,7 +15,8 @@ public record CreatePaymentCardCommand(
         String cardNumber,
         String holderName,
         String expirationDate,
-        String cvv
+        String cvv,
+        Long userId
 ) {
     public CreatePaymentCardCommand {
         if (cardNumber == null || cardNumber.isBlank())

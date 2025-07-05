@@ -1,5 +1,7 @@
 package com.acme.keeplo.platform.subscription.application.internal.commandservices;
 
+import com.acme.keeplo.platform.iam.domain.model.aggregates.User;
+import com.acme.keeplo.platform.iam.infrastructure.persistence.jpa.repositories.UserRepository;
 import com.acme.keeplo.platform.subscription.domain.model.commands.paymentCards.CreatePaymentCardCommand;
 import com.acme.keeplo.platform.subscription.domain.model.commands.paymentCards.UpdatePaymentCardCommand;
 import com.acme.keeplo.platform.subscription.domain.model.entity.PaymentCard; // Import the correct entity
@@ -17,14 +19,18 @@ import java.util.Optional;
 public class PaymentCardCommandServiceImpl implements PaymentCardCommandService {
 
     private final PaymentCardRepository paymentCardRepository;
+    private final UserRepository userRepository;
+
 
     /**
      * Constructs the service with the required repository dependency.
      *
      * @param paymentCardRepository the repository used for payment card persistence
      */
-    public PaymentCardCommandServiceImpl(PaymentCardRepository paymentCardRepository) {
+    public PaymentCardCommandServiceImpl(PaymentCardRepository paymentCardRepository,
+                                         UserRepository userRepository) {
         this.paymentCardRepository = paymentCardRepository;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -35,12 +41,16 @@ public class PaymentCardCommandServiceImpl implements PaymentCardCommandService 
      */
     @Override
     public Optional<PaymentCard> handle(CreatePaymentCardCommand command) {
+        User user = userRepository.findById(command.userId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
         var newPaymentCard = new PaymentCard(
                 command.cardNumber(),
                 command.holderName(),
                 command.expirationDate(),
                 command.cvv()
         );
+
+        newPaymentCard.setUser(user);
 
         paymentCardRepository.save(newPaymentCard);
         return Optional.of(newPaymentCard);
@@ -70,4 +80,6 @@ public class PaymentCardCommandServiceImpl implements PaymentCardCommandService 
         paymentCardRepository.save(cardToUpdate);
         return Optional.of(cardToUpdate);
     }
+
+
 }

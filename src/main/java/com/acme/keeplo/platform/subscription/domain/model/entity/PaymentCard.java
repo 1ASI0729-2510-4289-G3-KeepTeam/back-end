@@ -1,5 +1,6 @@
 package com.acme.keeplo.platform.subscription.domain.model.entity;
 
+import com.acme.keeplo.platform.iam.domain.model.aggregates.User;
 import com.acme.keeplo.platform.shared.domain.model.entities.AuditableModel;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -35,6 +36,10 @@ public class PaymentCard extends AuditableModel {
 
     @Column(nullable = false)
     private String cvv;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false) // Nombre real de la columna en la base de datos
+    private User user;
 
     /**
      * Protected constructor for JPA.

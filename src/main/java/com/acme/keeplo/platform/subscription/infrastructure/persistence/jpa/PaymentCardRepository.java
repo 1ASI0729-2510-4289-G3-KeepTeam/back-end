@@ -26,4 +26,6 @@ public interface PaymentCardRepository extends JpaRepository<PaymentCard, Long> 
      * @return an Optional containing the PaymentCard if found, or empty if not found
      */
     Optional<PaymentCard> findById(Long id);
+    List<PaymentCard> findAllByUser_Id(Long userId);
+
 }

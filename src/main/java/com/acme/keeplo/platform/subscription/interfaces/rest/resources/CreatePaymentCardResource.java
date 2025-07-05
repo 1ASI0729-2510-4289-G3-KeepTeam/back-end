@@ -13,7 +13,7 @@ import java.util.Date;
  * @param cvv            the card's CVV security code
  * @throws IllegalArgumentException if any required field is null
  */
-public record CreatePaymentCardResource(String cardNumber, String holderName, String expirationDate, String cvv) {
+public record CreatePaymentCardResource(String cardNumber, String holderName, String expirationDate, String cvv, Long userId ) {
     /**
      * Constructs a CreatePaymentCardResource with validation.
      *

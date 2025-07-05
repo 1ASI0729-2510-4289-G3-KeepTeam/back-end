@@ -3,7 +3,9 @@ package com.acme.keeplo.platform.subscription.interfaces.rest.controllers;
 import com.acme.keeplo.platform.subscription.domain.model.commands.paymentCards.CreatePaymentCardCommand;
 import com.acme.keeplo.platform.subscription.domain.model.commands.paymentCards.UpdatePaymentCardCommand;
 import com.acme.keeplo.platform.subscription.domain.model.commands.subscriptions.CreateSubscriptionCommand;
+import com.acme.keeplo.platform.subscription.domain.model.queries.GetPaymentCardsByUserIdQuery;
 import com.acme.keeplo.platform.subscription.domain.services.PaymentCardCommandService;
+import com.acme.keeplo.platform.subscription.domain.services.PaymentCardQueryService;
 import com.acme.keeplo.platform.subscription.interfaces.rest.resources.CreatePaymentCardResource;
 import com.acme.keeplo.platform.subscription.interfaces.rest.resources.PaymentCardResource;
 import com.acme.keeplo.platform.subscription.interfaces.rest.resources.UpdatePaymentCardResource;
@@ -14,6 +16,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -28,14 +32,17 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class PaymentCardController {
 
     private final PaymentCardCommandService paymentCardCommandService;
+    private final PaymentCardQueryService paymentCardQueryService;
 
     /**
      * Constructs a new PaymentCardController with the required PaymentCardCommandService.
      *
      * @param paymentCardCommandService service handling payment card commands
      */
-    public PaymentCardController(PaymentCardCommandService paymentCardCommandService) {
+    public PaymentCardController(PaymentCardCommandService paymentCardCommandService,
+     PaymentCardQueryService paymentCardQueryService) {
         this.paymentCardCommandService = paymentCardCommandService;
+        this.paymentCardQueryService = paymentCardQueryService;
     }
 
     /**
@@ -55,7 +62,8 @@ public class PaymentCardController {
                 resource.cardNumber(),
                 resource.holderName(),
                 resource.expirationDate(),
-                resource.cvv()
+                resource.cvv(),
+                resource.userId()
         );
 
         var result = paymentCardCommandService.handle(command);
@@ -92,4 +100,24 @@ public class PaymentCardController {
                 ResponseEntity.ok(PaymentCardResourceFromEntityAssembler.toResourceFromEntity(card))
         ).orElse(ResponseEntity.badRequest().build());
     }
+
+    @GetMapping("/user/{userId}")
+    @Operation(summary = "Get payment cards by user ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Payment cards retrieved"),
+            @ApiResponse(responseCode = "404", description = "No payment cards found for this user")
+    })
+    public ResponseEntity<List<PaymentCardResource>> getCardsByUserId(@PathVariable Long userId) {
+        var query = new GetPaymentCardsByUserIdQuery(userId);
+        var result = paymentCardQueryService.handle(query);
+
+        return result.map(cards -> ResponseEntity.ok(
+                        cards.stream()
+                                .map(PaymentCardResourceFromEntityAssembler::toResourceFromEntity)
+                                .toList()
+                )
+        ).orElse(ResponseEntity.notFound().build());
+    }
+
+
 }
