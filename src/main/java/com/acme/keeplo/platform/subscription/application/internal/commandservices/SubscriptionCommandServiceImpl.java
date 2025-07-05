@@ -81,6 +81,8 @@ public class SubscriptionCommandServiceImpl implements SubscriptionCommandServic
         subscription.validateState();
 
         subscriptionRepository.save(subscription);
+        user.setSubscription(subscription);
+        userRepository.save(user);
 
         return Optional.of(subscription);
     }
