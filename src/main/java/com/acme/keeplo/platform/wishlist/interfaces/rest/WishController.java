@@ -7,9 +7,7 @@ import com.acme.keeplo.platform.wishlist.domain.model.queries.GetWishById;
 import com.acme.keeplo.platform.wishlist.domain.model.services.WishCommandService;
 import com.acme.keeplo.platform.wishlist.domain.model.services.WishQueryService;
 import com.acme.keeplo.platform.wishlist.interfaces.rest.resources.*;
-import com.acme.keeplo.platform.wishlist.interfaces.rest.transform.AddTagToCollectionCommandFromResourceAssembler;
-import com.acme.keeplo.platform.wishlist.interfaces.rest.transform.UpdateWishCommandFromResourceAssembler;
-import com.acme.keeplo.platform.wishlist.interfaces.rest.transform.WishResourceFromEntityAssembler;
+import com.acme.keeplo.platform.wishlist.interfaces.rest.transform.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -88,7 +86,7 @@ public class WishController {
         return result ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 
-    @DeleteMapping("/wishes/{wishId}/tags")
+    @DeleteMapping("{wishId}/tags")
     @Operation(summary = "Eliminar todos los tags asociados a un deseo")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Tags eliminados exitosamente"),
@@ -126,11 +124,11 @@ public class WishController {
             @ApiResponse(responseCode = "200", description = "Tag agregado exitosamente"),
             @ApiResponse(responseCode = "404", description = "wish no encontrado")
     })
-    public ResponseEntity<Void> addTagToWish(
+    public ResponseEntity<Void> addTagsToWish(
             @PathVariable Long wishId,
-            @RequestBody AddTagToWishResource resource) {
+            @RequestBody List<TagResource> tags) {
 
-        var command = AddTagToCollectionCommandFromResourceAssembler.toCommand(wishId, resource);
+        var command = AddTagToWishCommandFromResourceAssembler.toCommand(wishId, tags);
         boolean result = wishCommandService.handle(command);
 
         return result ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();

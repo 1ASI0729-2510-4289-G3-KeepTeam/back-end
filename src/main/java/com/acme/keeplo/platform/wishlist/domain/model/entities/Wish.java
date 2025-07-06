@@ -30,6 +30,7 @@ public class Wish extends AuditableModel {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "collection_id", nullable = false)
     private Collection collection;
+    @Setter
     @ElementCollection
     @CollectionTable(name = "wish_tags", joinColumns = @JoinColumn(name = "wish_id"))
     private List<Tag> tags = new ArrayList<>();
@@ -53,10 +54,6 @@ public class Wish extends AuditableModel {
         this.description = description;
         this.urlImg = urlImg;
         this.isInTrash = isInTrash;
-    }
-
-    public void addTag(Tag tag) {
-        this.tags.add(tag);
     }
 
     public Long getIdCollection() {

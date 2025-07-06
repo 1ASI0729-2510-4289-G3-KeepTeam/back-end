@@ -6,11 +6,9 @@ import com.acme.keeplo.platform.wishlist.domain.model.queries.GetAllCollectionsQ
 import com.acme.keeplo.platform.wishlist.domain.model.queries.GetCollectionByIdQuery;
 import com.acme.keeplo.platform.wishlist.domain.model.services.CollectionCommandService;
 import com.acme.keeplo.platform.wishlist.domain.model.services.CollectionQueryService;
-import com.acme.keeplo.platform.wishlist.interfaces.rest.resources.AddTagToWishResource;
 import com.acme.keeplo.platform.wishlist.interfaces.rest.resources.CollectionResource;
 import com.acme.keeplo.platform.wishlist.interfaces.rest.resources.CreateCollectionResource;
 import com.acme.keeplo.platform.wishlist.interfaces.rest.resources.UpdateCollectionResource;
-import com.acme.keeplo.platform.wishlist.interfaces.rest.transform.AddTagToCollectionCommandFromResourceAssembler;
 import com.acme.keeplo.platform.wishlist.interfaces.rest.transform.CollectionResourceFromEntityAssembler;
 import com.acme.keeplo.platform.wishlist.interfaces.rest.transform.CreateCollectionCommandFromResourceAssembler;
 import com.acme.keeplo.platform.wishlist.interfaces.rest.transform.UpdateCollectionCommandFromResourceAssembler;

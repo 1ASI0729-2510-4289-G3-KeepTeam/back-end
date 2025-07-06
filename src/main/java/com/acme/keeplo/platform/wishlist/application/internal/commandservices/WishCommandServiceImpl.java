@@ -9,6 +9,8 @@ import com.acme.keeplo.platform.wishlist.infrastructure.persistence.jpa.reposito
 import com.acme.keeplo.platform.wishlist.infrastructure.persistence.jpa.repositories.WishRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 @Service
 public class WishCommandServiceImpl implements WishCommandService {
@@ -64,14 +66,13 @@ public class WishCommandServiceImpl implements WishCommandService {
 
     @Override
     public boolean handle(CreateTagToWishCommand command) {
-        var optionalWish = wishRepository.findById(command.wishId());
+        Optional<Wish> optionalWish = wishRepository.findById(command.wishId());
         if (optionalWish.isEmpty()) return false;
 
-        var wish = optionalWish.get();
-        var tag = new Tag(command.name(), command.color());
-        wish.addTag(tag);
-        wishRepository.save(wish);
+        Wish wish = optionalWish.get();
 
+        wish.setTags(new ArrayList<>(command.tag()));
+        wishRepository.save(wish);
         return true;
     }
 

@@ -1,8 +1,7 @@
-package com.acme.keeplo.platform.wishlist.interfaces.rest.resources;
+package com.acme.keeplo.platform.wishlist.interfaces.rest.transform;
 
-import com.acme.keeplo.platform.wishlist.domain.model.aggregates.Collection;
 import com.acme.keeplo.platform.wishlist.domain.model.commands.CreateWishCommand;
-import com.acme.keeplo.platform.wishlist.infrastructure.persistence.jpa.repositories.CollectionRepository;
+import com.acme.keeplo.platform.wishlist.interfaces.rest.resources.CreateWishResource;
 
 
 public class CreateWishCommandFromResourceAssembler {
