@@ -1,9 +1,7 @@
 package com.acme.keeplo.platform.wishlist.application.internal.commandservices;
 
 import com.acme.keeplo.platform.wishlist.domain.model.aggregates.Collection;
-import com.acme.keeplo.platform.wishlist.domain.model.commands.CreateTagToWishCommand;
-import com.acme.keeplo.platform.wishlist.domain.model.commands.CreateWishCommand;
-import com.acme.keeplo.platform.wishlist.domain.model.commands.UpdateWishCommand;
+import com.acme.keeplo.platform.wishlist.domain.model.commands.*;
 import com.acme.keeplo.platform.wishlist.domain.model.entities.Wish;
 import com.acme.keeplo.platform.wishlist.domain.model.services.WishCommandService;
 import com.acme.keeplo.platform.wishlist.domain.model.valueobjects.Tag;
@@ -43,9 +41,9 @@ public class WishCommandServiceImpl implements WishCommandService {
     }
 
     @Override
-    public boolean deleteById(Long id) {
-        if (!wishRepository.existsById(id)) return false;
-        wishRepository.deleteById(id);
+    public boolean handle(DeleteWishCommand command) {
+        if (!wishRepository.existsById(command.wishId())) return false;
+        wishRepository.deleteById(command.wishId());
         return true;
     }
 
@@ -65,7 +63,7 @@ public class WishCommandServiceImpl implements WishCommandService {
     }
 
     @Override
-    public boolean addTagToWish(CreateTagToWishCommand command) {
+    public boolean handle(CreateTagToWishCommand command) {
         var optionalWish = wishRepository.findById(command.wishId());
         if (optionalWish.isEmpty()) return false;
 
@@ -74,6 +72,13 @@ public class WishCommandServiceImpl implements WishCommandService {
         wish.addTag(tag);
         wishRepository.save(wish);
 
+        return true;
+    }
+
+    @Override
+    public boolean handle(DeleteTagsOfWishCommand command) {
+        if (!wishRepository.existsById(command.wishId())) return false;
+        wishRepository.deleteTagsByWishId(command.wishId());
         return true;
     }
 

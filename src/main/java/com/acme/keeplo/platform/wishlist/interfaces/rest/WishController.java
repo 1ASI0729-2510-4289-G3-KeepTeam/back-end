@@ -1,5 +1,7 @@
 package com.acme.keeplo.platform.wishlist.interfaces.rest;
 
+import com.acme.keeplo.platform.wishlist.domain.model.commands.DeleteTagsOfWishCommand;
+import com.acme.keeplo.platform.wishlist.domain.model.commands.DeleteWishCommand;
 import com.acme.keeplo.platform.wishlist.domain.model.queries.GetAllWishesByCollectionId;
 import com.acme.keeplo.platform.wishlist.domain.model.queries.GetWishById;
 import com.acme.keeplo.platform.wishlist.domain.model.services.WishCommandService;
@@ -74,16 +76,30 @@ public class WishController {
                 .toList();
         return ResponseEntity.ok(resources);
     }
-    @DeleteMapping("/wishes/{wishId}")
+    @DeleteMapping("{wishId}")
     @Operation(summary = "Eliminar un deseo por ID")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Deseo eliminado exitosamente"),
             @ApiResponse(responseCode = "404", description = "Deseo no encontrado")
     })
     public ResponseEntity<Void> deleteWish(@PathVariable Long wishId) {
-        var result = wishCommandService.deleteById(wishId);
+        var command = new DeleteWishCommand(wishId);
+        var result = wishCommandService.handle(command);
         return result ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
+
+    @DeleteMapping("/wishes/{wishId}/tags")
+    @Operation(summary = "Eliminar todos los tags asociados a un deseo")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Tags eliminados exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Deseo no encontrado")
+    })
+    public ResponseEntity<Void> deleteTagsOfWish(@PathVariable Long wishId) {
+        var command = new DeleteTagsOfWishCommand(wishId);
+        var result = wishCommandService.handle(command);
+        return result ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    }
+
     @PutMapping("/{wishId}")
     @Operation(summary = "Actualizar un deseo existente")
     @ApiResponses({
@@ -115,7 +131,7 @@ public class WishController {
             @RequestBody AddTagToWishResource resource) {
 
         var command = AddTagToCollectionCommandFromResourceAssembler.toCommand(wishId, resource);
-        boolean result = wishCommandService.addTagToWish(command);
+        boolean result = wishCommandService.handle(command);
 
         return result ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
