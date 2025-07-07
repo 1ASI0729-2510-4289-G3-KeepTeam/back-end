@@ -142,12 +142,7 @@ public class WishlistController {
         return ResponseEntity.ok(response);
     }
 
-    @ExceptionHandler(MaxCollectionsLimitReachedException.class)
-    public ResponseEntity<String> handleMaxCollectionsLimit(MaxCollectionsLimitReachedException ex) {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(ex.getMessage());
-    }
+
 }
 
 

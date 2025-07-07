@@ -1,6 +1,7 @@
 package com.acme.keeplo.platform.wishlist.application.internal.commandservices;
 
 import com.acme.keeplo.platform.iam.infrastructure.persistence.jpa.repositories.UserRepository;
+import com.acme.keeplo.platform.wishlist.domain.exceptions.MaxCollectionsLimitReachedException;
 import com.acme.keeplo.platform.wishlist.domain.model.aggregates.Collection;
 import com.acme.keeplo.platform.wishlist.domain.model.commands.CreateTagToWishCommand;
 import com.acme.keeplo.platform.wishlist.domain.model.commands.CreateCollectionCommand;
@@ -38,7 +39,7 @@ public class CollectionCommandServiceImpl implements CollectionCommandService {
 
         // 4. Validar si excede el límite
         if (currentCount >= maxAllowed) {
-            throw new IllegalStateException("Maximum number of collections reached for current membership.");
+            throw new MaxCollectionsLimitReachedException("Maximum number of collections reached for current membership.");
         }
 
         // 5. Crear y guardar la colección
