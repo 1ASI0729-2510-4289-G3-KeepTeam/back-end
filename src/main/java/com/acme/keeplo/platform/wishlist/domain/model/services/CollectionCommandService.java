@@ -6,7 +6,10 @@ import com.acme.keeplo.platform.wishlist.domain.model.commands.CreateCollectionC
 import com.acme.keeplo.platform.wishlist.domain.model.commands.UpdateCollectionCommand;
 
 import java.util.Optional;
-
+/**
+ * Application service interface for handling write operations related to {@link Collection} aggregates.
+ * Implements the command side of the CQRS pattern.
+ */
 public interface CollectionCommandService {
     Optional<Collection> handle(CreateCollectionCommand command);
     boolean deleteById(Long id);

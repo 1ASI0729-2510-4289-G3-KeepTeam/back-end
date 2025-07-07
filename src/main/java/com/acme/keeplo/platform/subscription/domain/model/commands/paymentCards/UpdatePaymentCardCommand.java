@@ -2,14 +2,16 @@ package com.acme.keeplo.platform.subscription.domain.model.commands.paymentCards
 
 import java.util.Date;
 /**
- * Command to create a new payment card.
+ * Command to update an existing payment card.
  *
- * Validates that all required fields are present and not blank.
+ * <p>This command validates that all required fields are present and correctly formatted.
+ * The expiration date must follow the MM/yy format, and the card ID must be a positive value.</p>
  *
- * @param cardNumber The number of the payment card.
- * @param holderName The name of the card holder.
- * @param expirationDate The expiration date of the card.
- * @param cvv The CVV security code of the card.
+ * @param cardId          The ID of the card to be updated (must be positive).
+ * @param cardNumber      The number of the payment card (required).
+ * @param holderName      The name of the cardholder (required).
+ * @param expirationDate  The expiration date in MM/yy format (required).
+ * @param cvv             The CVV security code of the card (required).
  */
 public record UpdatePaymentCardCommand(
         Long cardId,
@@ -18,6 +20,11 @@ public record UpdatePaymentCardCommand(
         String expirationDate,
         String cvv
 ) {
+    /**
+     * Compact constructor that validates required fields and formats.
+     *
+     * @throws IllegalArgumentException if any field is null, blank, invalid, or if cardId is not positive.
+     */
     public UpdatePaymentCardCommand {
         if (cardId <= 0)
             throw new IllegalArgumentException("cardId must be positive.");

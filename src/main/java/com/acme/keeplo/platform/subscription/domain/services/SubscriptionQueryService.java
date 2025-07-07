@@ -14,7 +14,11 @@ import java.util.Optional;
  * This interface represents the service to handle v queries.
  */
 public interface SubscriptionQueryService {
-
+    /**
+     * Handles the query to retrieve a subscription by user ID.
+     *
+     * @param query The query containing the user ID.
+     */
     Optional<Subscription> handle(GetSubscriptionByUserIdQuery query);}
 
 

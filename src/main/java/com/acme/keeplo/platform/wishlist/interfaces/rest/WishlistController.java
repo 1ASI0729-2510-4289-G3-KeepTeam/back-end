@@ -22,7 +22,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+/**
+ * REST controller for managing collections (wishlists).
+ * Provides endpoints for creating, retrieving, updating, and deleting collections.
+ */
 @RestController
 @RequestMapping(value = "/api/v1/collections")
 @Tag(name = "Wishlist", description = "Operaciones sobre colecciones de deseos")
@@ -30,12 +33,22 @@ public class WishlistController {
 
     private final CollectionCommandService collectionCommandService;
     private final CollectionQueryService collectionQueryService;
-
+    /**
+     * Constructs a new WishlistController with the required command and query services.
+     *
+     * @param collectionCommandService the service for handling collection commands
+     * @param collectionQueryService   the service for handling collection queries
+     */
     public WishlistController(CollectionCommandService collectionCommandService, CollectionQueryService collectionQueryService) {
         this.collectionCommandService = collectionCommandService;
         this.collectionQueryService = collectionQueryService;
     }
-
+    /**
+     * Creates a new collection.
+     *
+     * @param resource the request body containing collection details
+     * @return the created collection resource
+     */
     @PostMapping
     @Operation(summary = "Crear una nueva colección")
     @ApiResponses(value = {
@@ -51,7 +64,12 @@ public class WishlistController {
         var response = CollectionResourceFromEntityAssembler.toResourceFromEntity(collection);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
-
+    /**
+     * Retrieves a collection by its ID.
+     *
+     * @param collectionId the ID of the collection
+     * @return the collection resource, or 404 if not found
+     */
     @GetMapping("/{collectionId}")
     @Operation(summary = "Obtener una colección por ID")
     @ApiResponses({
@@ -67,6 +85,12 @@ public class WishlistController {
     }
 
 
+    /**
+     * Retrieves all collections associated with a specific user.
+     *
+     * @param userId the ID of the user
+     * @return list of collections for the user
+     */
     @GetMapping("/user/{userId}")
     @Operation(summary = "Obtener colecciones por User ID")
     @ApiResponses({
@@ -80,7 +104,12 @@ public class WishlistController {
                 .toList();
         return ResponseEntity.ok(resources);
     }
-
+    /**
+     * Retrieves all collections with a specific parent collection.
+     *
+     * @param parentCollectionId the ID of the parent collection
+     * @return list of child collections
+     */
     @GetMapping("/parentCollection/{parentCollectionId}")
     @Operation(summary = "Obtener colecciones por parent collection ID")
     @ApiResponses({
@@ -95,7 +124,11 @@ public class WishlistController {
         return ResponseEntity.ok(resources);
     }
 
-
+    /**
+     * Retrieves all collections in the system.
+     *
+     * @return list of all collections
+     */
     @GetMapping
     @Operation(summary = "Obtener todas las colecciones")
     @ApiResponses({
@@ -109,6 +142,12 @@ public class WishlistController {
                 .toList();
         return ResponseEntity.ok(resources);
     }
+    /**
+     * Deletes a collection by its ID.
+     *
+     * @param collectionId the ID of the collection to delete
+     * @return HTTP 204 if deleted, or 404 if not found
+     */
 
     @DeleteMapping("/{collectionId}")
     @Operation(summary = "Eliminar una colección por ID")
@@ -120,7 +159,13 @@ public class WishlistController {
         var result = collectionCommandService.deleteById(collectionId);
         return result ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
-
+    /**
+     * Updates an existing collection.
+     *
+     * @param collectionId the ID of the collection to update
+     * @param resource     the request body with updated collection data
+     * @return the updated collection resource, or 404 if not found
+     */
 
     @PutMapping("/{collectionId}")
     @Operation(summary = "Actualizar una colección existente")

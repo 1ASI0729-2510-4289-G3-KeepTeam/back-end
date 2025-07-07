@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface SubscriptionCommandService {
     /**
      * Handles the create Subscription command.
-     * @param command The create Subscription command.
+     * @param command The created Subscription command.
      * @return The created Subscription.
      *
      * @throws IllegalArgumentException If ID is null or empty

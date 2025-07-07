@@ -4,12 +4,14 @@ import java.util.Date;
 /**
  * Command to create a new payment card.
  *
- * Validates that all required fields are present and not blank.
+ * <p>This command validates that all required fields are present and correctly formatted.
+ * The expiration date must follow the MM/yy format.</p>
  *
- * @param cardNumber The number of the payment card.
- * @param holderName The name of the card holder.
- * @param expirationDate The expiration date of the card.
- * @param cvv The CVV security code of the card.
+ * @param cardNumber     The number of the payment card (required).
+ * @param holderName     The name of the cardholder (required).
+ * @param expirationDate The expiration date in MM/yy format (required).
+ * @param cvv            The CVV security code of the card (required).
+ * @param userId         The ID of the user to whom the card belongs.
  */
 public record CreatePaymentCardCommand(
         String cardNumber,
@@ -18,6 +20,12 @@ public record CreatePaymentCardCommand(
         String cvv,
         Long userId
 ) {
+
+    /**
+     * Compact constructor that validates required fields and formats.
+     *
+     * @throws IllegalArgumentException if any required field is null, blank, or improperly formatted.
+     */
     public CreatePaymentCardCommand {
         if (cardNumber == null || cardNumber.isBlank())
             throw new IllegalArgumentException("cardNumber is required.");

@@ -17,7 +17,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+/**
+ * REST controller for handling operations related to wishes.
+ * Provides endpoints to create, retrieve, update, delete wishes, and manage their associated tags.
+ */
 @RestController
 @RequestMapping("/api/v1/wishes")
 @Tag(name = "Wishes", description = "Operaciones sobre deseos")
@@ -25,12 +28,22 @@ public class WishController {
 
     private final WishCommandService wishCommandService;
     private final WishQueryService wishQueryService;
-
+    /**
+     * Constructs a new WishController with the required command and query services.
+     *
+     * @param wishCommandService The service that handles wish command operations.
+     * @param wishQueryService   The service that handles wish query operations.
+     */
     public WishController(WishCommandService wishCommandService, WishQueryService wishQueryService) {
         this.wishCommandService = wishCommandService;
         this.wishQueryService = wishQueryService;
     }
-
+    /**
+     * Creates a new wish.
+     *
+     * @param resource The resource containing the wish data.
+     * @return The created wish resource with HTTP 201, or HTTP 400 if invalid.
+     */
     @PostMapping
     @Operation(summary = "Crear un nuevo deseo")
     @ApiResponses({
@@ -46,7 +59,12 @@ public class WishController {
         var response = WishResourceFromEntityAssembler.toResourceFromEntity(wish);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
-
+    /**
+     * Retrieves a wish by its ID.
+     *
+     * @param wishId The ID of the wish.
+     * @return The wish resource, or 404 if not found.
+     */
     @GetMapping("/{wishId}")
     @Operation(summary = "Obtener un deseo por ID")
     @ApiResponses({
@@ -60,7 +78,12 @@ public class WishController {
                 .map(w -> ResponseEntity.ok(WishResourceFromEntityAssembler.toResourceFromEntity(w)))
                 .orElse(ResponseEntity.notFound().build());
     }
-
+    /**
+     * Retrieves all wishes for a given collection.
+     *
+     * @param collectionId The ID of the collection.
+     * @return A list of wishes.
+     */
     @GetMapping("/collection/{collectionId}")
     @Operation(summary = "Listar deseos por colección")
     @ApiResponses({
@@ -74,6 +97,13 @@ public class WishController {
                 .toList();
         return ResponseEntity.ok(resources);
     }
+
+    /**
+     * Deletes a wish by ID.
+     *
+     * @param wishId The ID of the wish to delete.
+     * @return HTTP 204 if deleted, or 404 if not found.
+     */
     @DeleteMapping("{wishId}")
     @Operation(summary = "Eliminar un deseo por ID")
     @ApiResponses({
@@ -85,7 +115,12 @@ public class WishController {
         var result = wishCommandService.handle(command);
         return result ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
-
+    /**
+     * Deletes all tags from a wish.
+     *
+     * @param wishId The ID of the wish.
+     * @return HTTP 204 if tags were deleted, or 404 if wish not found.
+     */
     @DeleteMapping("{wishId}/tags")
     @Operation(summary = "Eliminar todos los tags asociados a un deseo")
     @ApiResponses({
@@ -97,7 +132,13 @@ public class WishController {
         var result = wishCommandService.handle(command);
         return result ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
-
+    /**
+     * Updates an existing wish.
+     *
+     * @param wishId   The ID of the wish to update.
+     * @param resource The updated wish data.
+     * @return The updated wish resource, or 404 if not found.
+     */
     @PutMapping("/{wishId}")
     @Operation(summary = "Actualizar un deseo existente")
     @ApiResponses({
@@ -117,7 +158,13 @@ public class WishController {
         var response = WishResourceFromEntityAssembler.toResourceFromEntity(wish);
         return ResponseEntity.ok(response);
     }
-
+    /**
+     * Adds tags to a specific wish.
+     *
+     * @param wishId The ID of the wish.
+     * @param tags   The list of tags to add.
+     * @return HTTP 200 if successful, or 404 if wish not found.
+     */
     @PostMapping("/{wishId}/tags")
     @Operation(summary = "Agregar un tag a un wish")
     @ApiResponses({

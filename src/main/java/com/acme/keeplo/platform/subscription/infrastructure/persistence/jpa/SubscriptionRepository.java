@@ -15,7 +15,6 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, Long
      * Retrieves a subscription by the user's ID.
      *
      * @param userId the ID of the user associated with the subscription
-     * @return an Optional containing the Subscription if found, or empty if not found
      */
     Optional<Subscription> findByUserId(Long userId);
 }
