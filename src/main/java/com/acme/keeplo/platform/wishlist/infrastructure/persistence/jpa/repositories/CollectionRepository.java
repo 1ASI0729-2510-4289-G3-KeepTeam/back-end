@@ -10,4 +10,8 @@ public interface CollectionRepository extends JpaRepository<Collection, Long> {
     Optional<Collection> findById(Long id);
     List<Collection> findCollectionByIdUser(Long id);
     List<Collection> findCollectionByIdParentCollection(Long id);
+    int countByIdUserAndIsInTrashFalse(Long idUser);
+
+
+
 }

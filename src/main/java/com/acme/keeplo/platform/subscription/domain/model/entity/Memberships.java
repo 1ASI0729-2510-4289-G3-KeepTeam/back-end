@@ -1,6 +1,7 @@
 package com.acme.keeplo.platform.subscription.domain.model.entity;
 
 import com.acme.keeplo.platform.shared.domain.model.entities.AuditableModel;
+import com.acme.keeplo.platform.subscription.domain.exceptions.UnknownMembershipTypeException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -89,5 +90,18 @@ public class Memberships extends AuditableModel {
      */
     public boolean isFree() {
         return price == 0;
+    }
+
+    /**
+     * Returns the maximum number of collections allowed for this membership type.
+     *
+     * @return maximum number of collections allowed
+     * @throws UnknownMembershipTypeException if the membership type is unknown
+     */
+    public int getMaxCollectionsAllowed() {
+        if (this.isFree()) return 2;
+        if ("Plus".equalsIgnoreCase(this.name)) return 5;
+        if ("Infinite".equalsIgnoreCase(this.name)) return 10;
+        throw new UnknownMembershipTypeException(this.name);
     }
 }

@@ -1,5 +1,6 @@
 package com.acme.keeplo.platform.wishlist.interfaces.rest;
 
+import com.acme.keeplo.platform.wishlist.domain.exceptions.MaxCollectionsLimitReachedException;
 import com.acme.keeplo.platform.wishlist.domain.model.queries.GetAllCollectionsByParentCollectionId;
 import com.acme.keeplo.platform.wishlist.domain.model.queries.GetAllCollectionsByUserId;
 import com.acme.keeplo.platform.wishlist.domain.model.queries.GetAllCollectionsQuery;
@@ -139,6 +140,13 @@ public class WishlistController {
         var collection = result.get();
         var response = CollectionResourceFromEntityAssembler.toResourceFromEntity(collection);
         return ResponseEntity.ok(response);
+    }
+
+    @ExceptionHandler(MaxCollectionsLimitReachedException.class)
+    public ResponseEntity<String> handleMaxCollectionsLimit(MaxCollectionsLimitReachedException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ex.getMessage());
     }
 }
 

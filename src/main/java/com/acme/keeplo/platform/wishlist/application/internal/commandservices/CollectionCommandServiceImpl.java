@@ -1,5 +1,6 @@
 package com.acme.keeplo.platform.wishlist.application.internal.commandservices;
 
+import com.acme.keeplo.platform.iam.infrastructure.persistence.jpa.repositories.UserRepository;
 import com.acme.keeplo.platform.wishlist.domain.model.aggregates.Collection;
 import com.acme.keeplo.platform.wishlist.domain.model.commands.CreateTagToWishCommand;
 import com.acme.keeplo.platform.wishlist.domain.model.commands.CreateCollectionCommand;
@@ -16,13 +17,31 @@ import java.util.Optional;
 public class CollectionCommandServiceImpl implements CollectionCommandService {
 
     private final CollectionRepository collectionRepository;
+    private final UserRepository userRepository;
 
-    public CollectionCommandServiceImpl(CollectionRepository collectionRepository) {
+    public CollectionCommandServiceImpl(CollectionRepository collectionRepository, UserRepository userRepository) {
         this.collectionRepository = collectionRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
     public Optional<Collection> handle(CreateCollectionCommand command) {
+        var user = userRepository.findById(command.idUser())
+                .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + command.idUser()));
+
+        // 2. Obtener la suscripción y el límite permitido
+        var subscription = user.getSubscription();
+        var maxAllowed = subscription.getMembership().getMaxCollectionsAllowed();
+
+        // 3. Contar colecciones activas
+        int currentCount = collectionRepository.countByIdUserAndIsInTrashFalse(user.getId());
+
+        // 4. Validar si excede el límite
+        if (currentCount >= maxAllowed) {
+            throw new IllegalStateException("Maximum number of collections reached for current membership.");
+        }
+
+        // 5. Crear y guardar la colección
         Collection collection = new Collection(command);
         collectionRepository.save(collection);
         return Optional.of(collection);
