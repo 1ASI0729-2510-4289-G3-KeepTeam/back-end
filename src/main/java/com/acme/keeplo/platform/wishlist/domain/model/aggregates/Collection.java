@@ -84,34 +84,6 @@ public class Collection extends AuditableAbstractAggregateRoot<Collection> {
         this.isInTrash = isInTrash;
         this.idParentCollection = idParentCollection;
     }
-    /**
-     * List of wishes associated with this collection.
-     */
-    @OneToMany(mappedBy = "collection", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Wish> wishes = new ArrayList<>();
-    /**
-     * Adds a wish to this collection.
-     *
-     * @param wish The wish to add.
-     */
-    public void addWish(Wish wish) {
-        wish.setCollection(this);
-        this.wishes.add(wish);
-    }
-    /**
-     * Tags associated with this collection.
-     */
-    @ElementCollection
-    @CollectionTable(name = "collection_tags", joinColumns = @JoinColumn(name = "collection_id"))
-    private Set<Tag> tags = new HashSet<>();
-    /**
-     * Adds a tag to the collection.
-     *
-     * @param tag The tag to add.
-     */
-    public void addTag(Tag tag) {
-        this.tags.add(tag);
-    }
 
 
 }

@@ -88,12 +88,6 @@ public class UsersController {
         return ResponseEntity.ok(userResource);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        userCommandService.deleteUserById(id);
-        return ResponseEntity.noContent().build();
-    }
-
     @PatchMapping("/{id}/change-password")
     public ResponseEntity<?> changePassword(@PathVariable Long id, @RequestBody ChangePasswordResource resource) {
         var command = new ChangePasswordCommand(id, resource.currentPassword(), resource.newPassword());
