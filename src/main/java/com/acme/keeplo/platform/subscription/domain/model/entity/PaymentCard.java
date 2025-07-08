@@ -2,6 +2,9 @@ package com.acme.keeplo.platform.subscription.domain.model.entity;
 
 import com.acme.keeplo.platform.iam.domain.model.aggregates.User;
 import com.acme.keeplo.platform.shared.domain.model.entities.AuditableModel;
+import com.acme.keeplo.platform.subscription.domain.exceptions.InvalidCardNumberException;
+import com.acme.keeplo.platform.subscription.domain.exceptions.InvalidCvvException;
+import com.acme.keeplo.platform.subscription.domain.exceptions.InvalidExpirationDateException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -60,22 +63,13 @@ public class PaymentCard extends AuditableModel {
      * @param cvv the CVV code of the card (must not be null or blank)
      */
     public PaymentCard(String cardNumber, String holderName, String expirationDate, String cvv) {
-        if (cardNumber == null) {
-            throw new IllegalArgumentException("Card number cannot be null.");
-        }
+
         if (holderName == null || holderName.isBlank()) {
             throw new IllegalArgumentException("Holder name cannot be null or empty.");
         }
-        if (expirationDate == null) {
-            throw new IllegalArgumentException("Expiration date cannot be null.");
-        }
-        if (!expirationDate.matches("^(0[1-9]|1[0-2])/\\d{2}$")) {
-            throw new IllegalArgumentException("Expiration date must be in MM/yy format.");
-        }
-        if (cvv == null || cvv.isBlank()) {
-            throw new IllegalArgumentException("CVV cannot be null or empty.");
-        }
-
+        if (cardNumber == null) throw new InvalidCardNumberException();
+        if (expirationDate == null || !expirationDate.matches("^(0[1-9]|1[0-2])/\\d{2}$")) throw new InvalidExpirationDateException();
+        if (cvv == null || cvv.isBlank()) throw new InvalidCvvException();
         this.cardNumber = cardNumber;
         this.holderName = holderName;
         this.expirationDate = expirationDate;

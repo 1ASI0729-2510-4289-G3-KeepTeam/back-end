@@ -9,6 +9,9 @@ package com.acme.keeplo.platform.subscription.domain.model.aggregates;
  */
 
 import com.acme.keeplo.platform.iam.domain.model.aggregates.User; // Importa tu nueva entidad User
+import com.acme.keeplo.platform.subscription.domain.exceptions.NullMembershipException;
+import com.acme.keeplo.platform.subscription.domain.exceptions.NullUserForSubscriptionException;
+import com.acme.keeplo.platform.subscription.domain.exceptions.PaymentCardRequiredException;
 import com.acme.keeplo.platform.subscription.domain.model.entity.Memberships;
 import com.acme.keeplo.platform.subscription.domain.model.entity.PaymentCard;
 import jakarta.persistence.*;
@@ -64,10 +67,9 @@ public class Subscription extends AbstractAggregateRoot<Subscription> {
      * @param user the user subscribing
      */
     public Subscription(Memberships membership, PaymentCard paymentCard, User user) {
-        if (membership == null) throw new IllegalArgumentException("Membership cannot be null");
-        if (!membership.isFree() && paymentCard == null)
-            throw new IllegalArgumentException("Non-free membership requires a payment card");
-        if (user == null) throw new IllegalArgumentException("User cannot be null for a subscription");
+        if (membership == null) throw new NullMembershipException();
+        if (!membership.isFree() && paymentCard == null) throw new PaymentCardRequiredException();
+        if (user == null) throw new NullUserForSubscriptionException();
 
         this.membership = membership;
         this.paymentCard = paymentCard;

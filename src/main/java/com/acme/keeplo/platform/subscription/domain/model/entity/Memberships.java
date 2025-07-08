@@ -1,6 +1,7 @@
 package com.acme.keeplo.platform.subscription.domain.model.entity;
 
 import com.acme.keeplo.platform.shared.domain.model.entities.AuditableModel;
+import com.acme.keeplo.platform.subscription.domain.exceptions.NegativeMembershipPriceException;
 import com.acme.keeplo.platform.subscription.domain.exceptions.UnknownMembershipTypeException;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -51,7 +52,7 @@ public class Memberships extends AuditableModel {
             throw new IllegalArgumentException("Membership name cannot be null or empty.");
         }
         if (price < 0) {
-            throw new IllegalArgumentException("Membership price cannot be negative.");
+            throw new NegativeMembershipPriceException();
         }
         if (description == null || description.isBlank()) {
             throw new IllegalArgumentException("Membership description cannot be null or empty.");
